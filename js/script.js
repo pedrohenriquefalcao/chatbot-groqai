@@ -40,6 +40,8 @@ const chamaGroq = async (textoUsuario) => {
 botaoEnvia.addEventListener("click", async (event) => {
     event.preventDefault();
 
+    botaoEnvia.disabled = true;
+
     const texto = inputPrompt.value;
 
     if (!texto) return;
@@ -48,5 +50,9 @@ botaoEnvia.addEventListener("click", async (event) => {
 
     const respostaIA = await chamaGroq(texto);
 
+
+
     elementoResposta.innerText = respostaIA;
+
+    botaoEnvia.disabled = false;
 });
