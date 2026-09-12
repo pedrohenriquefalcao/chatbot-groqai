@@ -1,5 +1,6 @@
 const apiKey = window.CONFIG.API_KEY;
 
+const caixaResultado = document.getElementById("caixa-resultado");
 const inputPrompt = document.getElementById("prompt");
 const botaoEnvia = document.getElementById("enviar");
 const elementoResposta = document.getElementById("resposta-prompt");
