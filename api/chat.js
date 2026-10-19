@@ -9,7 +9,7 @@ module.exports = async (req, res) => {
     return res.status(400).json({ error: { message: "Texto inválido" } });
   }
 
-  const modelo = process.env.GROQ_MODEL || "llama-3.3-70b-versatile";
+  const modelo = process.env.GROQ_MODEL || "openai/gpt-oss-20b";
 
   try {
     const resposta = await fetch("https://api.groq.com/openai/v1/chat/completions", {
