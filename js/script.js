@@ -1,9 +1,17 @@
 const apiKey = window.CONFIG.API_KEY;
+const modelo = window.CONFIG.MODEL;
 
 const caixaResultado = document.getElementById("caixa-resultado");
 const inputPrompt = document.getElementById("prompt");
 const botaoEnvia = document.getElementById("enviar");
 const elementoResposta = document.getElementById("resposta-prompt");
+const badgeModelo = document.getElementById("badge-modelo");
+
+const atualizaBadge = (nomeModelo) => {
+    badgeModelo.innerText = `Modelo: ${nomeModelo}`;
+};
+
+atualizaBadge(modelo);
 
 const chamaGroq = async (textoUsuario) => {
     const apiUrl = "https://api.groq.com/openai/v1/chat/completions";
@@ -16,8 +24,11 @@ const chamaGroq = async (textoUsuario) => {
                 "Authorization": `Bearer ${apiKey}`
             },
             body: JSON.stringify({
-                model: "groq/compound-mini",
-                messages: [{ role: "user", content: textoUsuario }]
+                model: modelo,
+                messages: [
+                    { role: "system", content: "Responda em texto simples, sempre em PT-BR." },
+                    { role: "user", content: textoUsuario }
+                ]
             })
         });
 
@@ -29,6 +40,8 @@ const chamaGroq = async (textoUsuario) => {
             return `Erro na API (${resposta.status}): ${dados.error.message}`;
         }
 
+        if (dados.model) atualizaBadge(dados.model);
+            
         return dados.choices[0].message.content;
 
     } catch (e) {
@@ -42,9 +55,11 @@ botaoEnvia.addEventListener("click", async (event) => {
 
     botaoEnvia.disabled = true;
 
-    const texto = inputPrompt.value;
+    const texto = inputPrompt.value.trim();
 
     if (!texto) return;
+
+    botaoEnvia.disabled = true;
 
     elementoResposta.innerText = "Pensando...";
 
@@ -52,7 +67,7 @@ botaoEnvia.addEventListener("click", async (event) => {
 
 
 
-    elementoResposta.innerText = respostaIA;
+    elementoResposta.innerHTML = DOMPurify.sanitize(marked.parse(respostaIA));
 
     botaoEnvia.disabled = false;
 });
